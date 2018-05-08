@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Servidor API - 2 Registro de Imoveis - CG-MS",
   "main": "main.js",
-  "scripts": {    
+  "scripts": {
     "start": "./node_modules/.bin/cross-env NODE_ENV=development SERVER_PORT=5001 ./node_modules/.bin/ts-node ./src/main.ts",
-    "dev": "./node_modules/.bin/cross-env NODE_ENV=development SERVER_PORT=5001 ./node_modules/.bin/ts-node-dev --respawn --type-check ./src/main.ts"    
+    "dev": "./node_modules/.bin/cross-env NODE_ENV=development SERVER_PORT=5001 ./node_modules/.bin/ts-node-dev --respawn --type-check ./src/main.ts"
   },
   "keywords": [],
   "author": "",

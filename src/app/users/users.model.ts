@@ -4,7 +4,7 @@ import { validateCPF, saveMiddleware, updateMiddleware } from '../../config'
 
 export interface Phones extends mongoose.Document {
     type: string,
-    number: number,
+    number: string,
     isWhastapp: boolean
 }
 
@@ -30,10 +30,10 @@ const phoneSchema = new mongoose.Schema({
         enum: ['FIXO', 'CELULAR']
     },
     number: {
-        type: Number,
+        type: String,
         require: true
     },
-    isWhastapp: {
+    whastapp: {
         type: Boolean,
         required: false
     }

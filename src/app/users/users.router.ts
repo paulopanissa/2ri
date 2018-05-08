@@ -2,7 +2,6 @@ import * as restify from 'restify';
 import { NotFoundError } from 'restify-errors';
 import { Model } from '../../config';
 import { User } from './users.model'
-import { ObjectId } from 'bson';
 
 class UserRouter extends Model<User> {
 
@@ -24,6 +23,7 @@ class UserRouter extends Model<User> {
 
         app.get('/api/users/:id/phones', [this.validadeId, this.findPhones])
         app.post('/api/users/:id/phones', [this.validadeId, this.createPhone])
+        app.put('/api/users/:id/phones', [this.validadeId, this.replacePhone])
     }
 
     
@@ -51,12 +51,35 @@ class UserRouter extends Model<User> {
     }
 
     createPhone = (req, res, next) => {
-        let options = { safe: true, upsert: true }
+        let options = { new: true }
         User.findByIdAndUpdate(
             {_id: req.params.id},
             { $push: { phones: req.body}}, options)
-            .then(this.render(res, next))
+            .then(rest => {
+                if(!rest){
+                    throw new NotFoundError("Telefone(s) não encontrado")
+                }else {
+                    res.json(rest)
+                    return next()
+                }
+            })
             .catch(next)
+    }
+
+    replacePhone = (req, res, next) => {
+        User.findById(req.params.id, )
+            .then(rest => {
+                if(!rest){
+                    throw new NotFoundError("Telefone(s) não encontrado")
+                }else {
+                    rest.phones = req.body
+                    return rest.save()
+                }
+            })
+            .then(rest => {
+                res.json(rest.phones)
+                return next()
+            }).catch(next)
     }
 }
 
