@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt'
+import {User} from "../../app/users";
 const env = require('../env/env')()
 
 export const hassPassword = (obj, next) => {
@@ -10,9 +11,13 @@ export const hassPassword = (obj, next) => {
               .catch(next)
 }
 
+export const comparePassword = (password, hash) => {
+    return bcrypt.compareSync(password, hash)
+}
+
 export const saveMiddleware = function (next) {
-    const user = this
-    if(user.isModified('password')){ 
+    const user: User = this
+    if(user.isModified('password')){
         next()
     }else {
         hassPassword(user, next)
@@ -27,3 +32,4 @@ export const updateMiddleware = function(next) {
         hassPassword(this.getUpdate(), next)
     }
 }
+

@@ -1,25 +1,32 @@
 import * as mongoose from 'mongoose'
+import * as bcrypt from 'bcrypt'
 const env    = require('../../config/env/env')()
-import { validateCPF, saveMiddleware, updateMiddleware } from '../../config'
+import { validateCPF } from '../../config'
 
 export interface Phones extends mongoose.Document {
     type: string,
     number: string,
-    isWhastapp: boolean
+    whastapp: boolean
 }
 
 export interface User extends mongoose.Document {
     username: string,
     email: string,
     password: string,
-    firstName: string,
-    lastName: string,
-    fullName: string,
+    first_name: string,
+    last_name: string,
+    full_name: string,
+    photo?: string,
     office?: string,
     gender?: string,
     cpf?: string,
+    ramal?: string,
     phones?: Phones[],
-    ramal?: string
+    matches(password:string):boolean
+}
+
+export interface UserModel extends mongoose.Model<User> {
+    findByEmail(email: string, projection?: string): Promise<User>
 }
 
 const phoneSchema = new mongoose.Schema({
@@ -58,15 +65,15 @@ const userSchema = new mongoose.Schema({
         select: false,
         required: true
     },
-    firstName: {
+    first_name: {
         type: String,
         required: true
     },
-    lastName: {
+    last_name: {
         type: String,
         required: true
     },
-    fullName: {
+    full_name: {
         type: String,
         required: true,
         uppercase: true
@@ -110,10 +117,46 @@ const userSchema = new mongoose.Schema({
     }
 })
 
+// find to email
+userSchema.statics.findByEmail = function(email:string, projection: string) {
+    return this.findOne({email}, projection)
+}
+userSchema.methods.matches = function(password: string): boolean {
+    return bcrypt.compareSync(password, this.password)
+}
 
+const hashPassword = (obj, next)=>{
+    bcrypt.hash(obj.password, env.security.saltRounds)
+        .then(hash=>{
+            obj.password = hash
+            next()
+        }).catch(next)
+}
+
+const saveMiddleware = function (next){
+    const user: User = this
+    if(!user.isModified('password')){
+        next()
+    }else{
+        hashPassword(user, next)
+    }
+}
+
+const updateMiddleware = function(next) {
+    this.getUpdate().updatedAt = Date.now()
+    if(!this.getUpdate().password) {
+        next()
+    }else{
+        hashPassword(this.getUpdate(), next)
+    }
+}
+
+// new user bcrypt Password
 userSchema.pre('save', saveMiddleware)
+// findOneAndUpdate check change password -> bcrypt
 userSchema.pre('findOneAndUpdate', updateMiddleware)
+// update check change password -> bcrypt
 userSchema.pre('update', updateMiddleware)
 
 
-export const User = mongoose.model<User>('User', userSchema)
+export const User = mongoose.model<User, UserModel>('User', userSchema)

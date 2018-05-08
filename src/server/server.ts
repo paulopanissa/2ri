@@ -1,7 +1,8 @@
 import * as restify from 'restify'
 import * as mongoose from 'mongoose'
 const env = require('../config/env/env')()
-import { Router, mergePatchBodyParser, errorHandler } from '../config';
+import { Router, mergePatchBodyParser, errorHandler, tokenParser } from '../config';
+
 
 
 export class Server {
@@ -18,7 +19,6 @@ export class Server {
     initRoutes(routers: Router[]): Promise<any>{
         return new Promise((resolve, reject)=>{
             try {
-                console.log(env)
                 this.app = restify.createServer({
                     name: 'registro-api',
                     version: '1.0.0'
@@ -27,6 +27,7 @@ export class Server {
                 this.app.use(restify.plugins.queryParser())
                 this.app.use(restify.plugins.bodyParser())
                 this.app.use(mergePatchBodyParser)
+                this.app.use(tokenParser)
                 
                 // Routes
                 for (let router of routers) {

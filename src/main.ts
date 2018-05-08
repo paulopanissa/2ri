@@ -1,10 +1,11 @@
 import { Server } from './server/server';
-import { userRouter } from './app';
+import { authRouter, userRouter } from './app';
 
 const server = new Server()
 
 server
 .bootstrap([
+    authRouter,
     userRouter
 ])
 .then(server => {

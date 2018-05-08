@@ -10,26 +10,36 @@ class UserRouter extends Model<User> {
         this.on('beforeRender', document => {
             document.password = undefined
         })
-    }    
+    }
+
+    envelope(document) {
+        let resource = super.envelope(document)
+        resource._links.phones = `${this.basePath}/${resource._id}/phones`
+        return resource
+    }
 
     applyRoutes(app: restify.Server) {
 
-        app.get('/api/users', this.findAll)
-        app.get('/api/users/:id', [this.validadeId, this.findById])
-        app.post('/api/users', this.store)
-        app.put('/api/users/:id', [this.validadeId, this.replace])
-        app.patch('/api/users/:id', [this.validadeId, this.update])
-        app.del('/api/users/:id', [this.validadeId, this.delete])
+        app.get({path: `${this.basePath}`, version: '1.1.0'}, [this.findByEmail, this.findAll])
+        app.get({path: `${this.basePath}`, version: '1.0.0'}, this.findAll)
+        app.get(`${this.basePath}/:id`, [this.validadeId, this.findById])
+        app.post(`${this.basePath}`, this.store)
+        app.put(`${this.basePath}/:id`, [this.validadeId, this.replace])
+        app.patch(`${this.basePath}/:id`, [this.validadeId, this.update])
+        app.del(`${this.basePath}/:id`, [this.validadeId, this.delete])
 
-        app.get('/api/users/:id/phones', [this.validadeId, this.findPhones])
-        app.post('/api/users/:id/phones', [this.validadeId, this.createPhone])
-        app.put('/api/users/:id/phones', [this.validadeId, this.replacePhone])
+        app.get(`${this.basePath}/:id/phones`, [this.validadeId, this.findPhones])
+        app.put(`${this.basePath}/:id/phones`, [this.validadeId, this.replacePhone])
+
+
     }
 
     
     findByEmail = (req, res, next) => {
         if(req.query.email) {
-            User.find({email: req.query.email})
+            let email = req.query.email
+            User.findByEmail(email)
+                .then(user => [user])
                 .then(this.renderAll(res, next))
                 .catch(next)
         }else {
