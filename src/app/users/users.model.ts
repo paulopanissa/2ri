@@ -6,7 +6,7 @@ import { validateCPF } from '../../config'
 export interface Phones extends mongoose.Document {
     type: string,
     number: string,
-    whastapp: boolean
+    whast_app: boolean
 }
 
 export interface User extends mongoose.Document {
@@ -22,7 +22,8 @@ export interface User extends mongoose.Document {
     cpf?: string,
     ramal?: string,
     phones?: Phones[],
-    matches(password:string):boolean
+    matches(password:string):boolean,
+    hasAny(...profiles: string[]): boolean // hasAny(['admin', 'user'])
 }
 
 export interface UserModel extends mongoose.Model<User> {
@@ -40,7 +41,7 @@ const phoneSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    whastapp: {
+    whast_app: {
         type: Boolean,
         required: false
     }
@@ -77,7 +78,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         uppercase: true
-    }, 
+    },
+    photo: {
+        type: String,
+        required: false
+    },
     office: {
         type: String,
         required: false
@@ -95,15 +100,19 @@ const userSchema = new mongoose.Schema({
             message: '{PATH}: Invalid CPF ({VALUE})'
         }
     },
+    profiles: {
+        type: [String],
+        required: false
+    },
+    ramal: {
+        type: String,
+        required: false
+    },
     phones: {
         type: [phoneSchema],
         required: false,
         select: true,
         default: []
-    },
-    ramal: {
-        type: String,
-        required: false
     },
     createdAt: {
         type: Date,
@@ -123,6 +132,10 @@ userSchema.statics.findByEmail = function(email:string, projection: string) {
 }
 userSchema.methods.matches = function(password: string): boolean {
     return bcrypt.compareSync(password, this.password)
+}
+
+userSchema.methods.hasAny = function(...profiles: string[]) : boolean {
+    return profiles.some(profile => this.profiles.indexOf(profile) !== -1)
 }
 
 const hashPassword = (obj, next)=>{
