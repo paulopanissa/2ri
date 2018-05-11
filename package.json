@@ -5,25 +5,47 @@
   "main": "main.js",
   "scripts": {
     "start": "./node_modules/.bin/cross-env NODE_ENV=development SERVER_PORT=5001 ./node_modules/.bin/ts-node ./src/main.ts",
-    "dev": "./node_modules/.bin/cross-env NODE_ENV=development SERVER_PORT=5001 ./node_modules/.bin/ts-node-dev --respawn --type-check ./src/main.ts"
+    "dev": "./node_modules/.bin/cross-env NODE_ENV=development ./node_modules/.bin/ts-node-dev --respawn --type-check ./src/main.ts",
+    "test": "jest"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
   "dependencies": {
     "bcrypt": "^2.0.1",
     "jsonwebtoken": "8.1.1",
+    "millisecond": "^0.1.2",
     "mongoose": "^4.13.9",
     "restify": "^6.3.4",
     "restify-errors": "^5.0.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
+    "@types/jest": "22.1.2",
     "@types/jsonwebtoken": "7.2.5",
+    "@types/milliseconds": "0.0.29",
     "@types/mongoose": "^4.7.32",
     "@types/restify": "^5.0.6",
     "@types/restify-errors": "^4.3.2",
+    "@types/supertest": "2.0.4",
     "cross-env": "^5.1.4",
+    "jest": "22.4.2",
+    "supertest": "3.0.0",
+    "ts-jest": "22.0.4",
     "ts-node": "^6.0.3",
     "ts-node-dev": "^1.0.0-pre.21",
     "typescript": "^2.8.3"
