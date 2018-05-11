@@ -1,9 +1,11 @@
 import * as restify from 'restify';
 import { NotFoundError } from 'restify-errors';
-import { Model } from '../../config';
+import { Model, authorize } from '../../config';
 import { User } from './users.model'
 
 class UserRouter extends Model<User> {
+
+    pageSize = 20
 
     constructor() {
         super(User)
@@ -20,14 +22,18 @@ class UserRouter extends Model<User> {
 
     applyRoutes(app: restify.Server) {
 
-        app.get({path: `${this.basePath}`, version: '1.1.0'}, [this.findByEmail, this.findAll])
-        app.get({path: `${this.basePath}`, version: '1.0.0'}, this.findAll)
-        app.get(`${this.basePath}/:id`, [this.validadeId, this.findById])
+        app.get(`${this.basePath}`, [ 
+            authorize('owner', 'oficial', 'substituto'),
+            this.findByEmail,
+            this.findAll])
+        app.get(`${this.basePath}/:id`, [
+            authorize('owner', 'oficial', 'substituto'),
+            this.validadeId,
+            this.findById])
         app.post(`${this.basePath}`, this.store)
         app.put(`${this.basePath}/:id`, [this.validadeId, this.replace])
         app.patch(`${this.basePath}/:id`, [this.validadeId, this.update])
         app.del(`${this.basePath}/:id`, [this.validadeId, this.delete])
-
         app.get(`${this.basePath}/:id/phones`, [this.validadeId, this.findPhones])
         app.put(`${this.basePath}/:id/phones`, [this.validadeId, this.replacePhone])
 

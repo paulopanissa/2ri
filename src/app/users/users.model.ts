@@ -1,12 +1,13 @@
 import * as mongoose from 'mongoose'
 import * as bcrypt from 'bcrypt'
-const env    = require('../../config/env/env')()
 import { validateCPF } from '../../config'
+const env    = require('../../config/env/env')()
+
 
 export interface Phones extends mongoose.Document {
     type: string,
     number: string,
-    whast_app: boolean
+    whastapp: boolean
 }
 
 export interface User extends mongoose.Document {
@@ -22,8 +23,10 @@ export interface User extends mongoose.Document {
     cpf?: string,
     ramal?: string,
     phones?: Phones[],
+    is_active: boolean,
     matches(password:string):boolean,
-    hasAny(...profiles: string[]): boolean // hasAny(['admin', 'user'])
+    userActive(is_active: boolean): boolean,
+    hasAny(...profiles: string[]): boolean
 }
 
 export interface UserModel extends mongoose.Model<User> {
@@ -41,7 +44,7 @@ const phoneSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    whast_app: {
+    whastapp: {
         type: Boolean,
         required: false
     }
@@ -102,7 +105,9 @@ const userSchema = new mongoose.Schema({
     },
     profiles: {
         type: [String],
-        required: false
+        required: false,
+        default: ['user']
+        
     },
     ramal: {
         type: String,
@@ -113,6 +118,11 @@ const userSchema = new mongoose.Schema({
         required: false,
         select: true,
         default: []
+    },
+    is_active: {
+        type: Boolean,
+        required: true,
+        default: false
     },
     createdAt: {
         type: Date,
@@ -130,6 +140,11 @@ const userSchema = new mongoose.Schema({
 userSchema.statics.findByEmail = function(email:string, projection: string) {
     return this.findOne({email}, projection)
 }
+
+userSchema.methods.userActive = function(is_active: boolean): boolean {
+    return false
+}
+
 userSchema.methods.matches = function(password: string): boolean {
     return bcrypt.compareSync(password, this.password)
 }
