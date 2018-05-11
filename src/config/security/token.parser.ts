@@ -25,19 +25,19 @@ function extractToken(req: restify.Request){
     }
 }
 
-function applyBearer(req: restify.Request, next): (error, decoded) => void  {
-    return (error, decoded) => {
-        if(decoded){
-            User.findByEmail(decoded.sub)
-                .then(user => {
-                    if(user){
-                        // associar user in request
-                        req.authenticated = user
-                        // Finalizar a Autenticação
-                    }
-                }).catch(next)
-        } else {
-            next()
-        }
+function applyBearer (req: restify.Request, next): (error, decoded) => void {
+    return (error, decoded) =>{
+      if(decoded) {
+        User.findByEmail(decoded.sub).then(user=>{
+          if(user){
+            //associar o usuário no request
+            req.authenticated = user //
+          }
+          next()
+        }).catch(next)
+      } else {
+        next()
+      }
     }
-}
+  }
+  
