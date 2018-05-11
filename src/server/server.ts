@@ -1,4 +1,5 @@
 import * as restify from 'restify'
+import * as fs from 'fs'
 import * as mongoose from 'mongoose'
 const env = require('../config/env/env')()
 import { Router, mergePatchBodyParser, errorHandler, tokenParser } from '../config';
@@ -21,7 +22,9 @@ export class Server {
             try {
                 this.app = restify.createServer({
                     name: 'registro-api',
-                    version: '1.0.0'
+                    version: '1.0.0',
+                    certificate: fs.readFileSync('./src/config/security/keys/cert.pem'),
+                    key: fs.readFileSync('./src/config/security/keys/key.pem')
                 })
                 
                 this.app.use(restify.plugins.queryParser())
@@ -49,5 +52,9 @@ export class Server {
     bootstrap(routers: Router[] = []): Promise<Server>{
         return this.initializeDb().then(() => 
                this.initRoutes(routers).then(() => this))
+    }
+
+    shutdown(){
+        return mongoose.disconnect().then(()=>this.app.close())
     }
 }
