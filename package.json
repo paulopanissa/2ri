@@ -1,16 +1,22 @@
 {
   "name": "registro.dev",
   "version": "1.0.0",
-  "description": "Servidor API - 2 Registro de Imoveis - CG-MS",
+  "description": "Servidor API",
   "main": "main.js",
+  "private": true,
   "scripts": {
     "start": "./node_modules/.bin/cross-env NODE_ENV=development SERVER_PORT=5001 ./node_modules/.bin/ts-node ./src/main.ts",
     "dev": "./node_modules/.bin/cross-env NODE_ENV=development ./node_modules/.bin/ts-node-dev --respawn --type-check ./src/main.ts",
-    "test": "jest"
+    "test": "./node_modules/.bin/cross-env NODE_ENV=development ./node_modules/.bin/ts-node ./src/jest.startup.ts"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Paulo Celso de Souza Panissa Filho",
+  "license": "MIT",
   "jest": {
+    "verbose": true,
+    "globals": {
+      "address": "http://localhost:3001",
+      "auth": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkByaS5kZXYiLCJpYXQiOjE1MjU4MTAwMTF9.esY59TIoDYi4wCCfzLYxZJRGs2Z5OBXkYjBuRXRVTs4"
+    },
     "testEnvironment": "node",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
@@ -44,6 +50,7 @@
     "@types/supertest": "2.0.4",
     "cross-env": "^5.1.4",
     "jest": "22.4.2",
+    "jest-cli": "22.4.2",
     "supertest": "3.0.0",
     "ts-jest": "22.0.4",
     "ts-node": "^6.0.3",
