@@ -1,5 +1,5 @@
 import { Server } from './server/server';
-import { mainRouter, authRouter, userRouter } from './app';
+import { mainRouter, authRouter, userRouter, atosRouter } from './app';
 const env = require('./config/env/env')()
 
 const server = new Server()
@@ -8,7 +8,8 @@ server
 .bootstrap([
     mainRouter,
     authRouter,
-    userRouter
+    userRouter,
+    atosRouter
 ])
 .then(server => {
     if(process.env.NODE_ENV === 'development'){

@@ -7,6 +7,9 @@ module.exports = {
     },
     security: {
         saltRounds: process.env.SALT_ROUNDS || 10,
-        apiToken: process.env.API_SECRET || 'FC431DA38F2E02EE31247EF887CD6AF97A1D04D844DECC148D320DCC01BAE2DD'
+        apiToken: process.env.API_SECRET || 'FC431DA38F2E02EE31247EF887CD6AF97A1D04D844DECC148D320DCC01BAE2DD',
+        enabledHTTPS: process.env.ENABLE_HTTPS || false,
+        certificate: process.env.CERT_FILE || './src/config/security/keys/cert.pem',
+        key: process.env.KEY_FILE || './src/config/security/keys/key.pem'
     }
 }

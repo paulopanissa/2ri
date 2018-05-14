@@ -4,8 +4,6 @@ import * as mongoose from 'mongoose'
 const env = require('../config/env/env')()
 import { Router, mergePatchBodyParser, errorHandler, tokenParser } from '../config';
 
-
-
 export class Server {
 
     app: restify.Server
@@ -20,12 +18,18 @@ export class Server {
     initRoutes(routers: Router[]): Promise<any>{
         return new Promise((resolve, reject)=>{
             try {
-                this.app = restify.createServer({
+
+                const options: restify.ServerOptions = {
                     name: 'registro-api',
                     version: '1.0.0',
-                    certificate: fs.readFileSync('./src/config/security/keys/cert.pem'),
-                    key: fs.readFileSync('./src/config/security/keys/key.pem')
-                })
+                }
+
+                if(env.security.enabledHTTPS) {
+                    options.certificate = fs.readFileSync(env.security.certificate)
+                    options.key = fs.readFileSync(env.security.key)
+                }
+
+                this.app = restify.createServer(options)
                 
                 this.app.use(restify.plugins.queryParser())
                 this.app.use(restify.plugins.bodyParser())
