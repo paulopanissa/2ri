@@ -19,13 +19,14 @@ export interface PF extends mongoose.Document {
     pacto_reg_cidade?: string,
     pacto_reg_uf?: string,
     cj_sign?: boolean,
-    conjuge: [Conjuge]
+    conjuge?: [Conjuge]
     u_cnh?: boolean, // se está utilizando a CNH
     cnh_form?: string,
     cnh_reg?: string,
     cnh_uf?: string,
     rg: string,
-    rg_uf: string,
+    rg_org?: string,
+    rg_uf?: string,
     cpf: string,
     endereco: string,
     numero: string,
@@ -126,6 +127,10 @@ export const pfSchema = new mongoose.Schema({
         required: false
     },
     rg: {
+        type: String,
+        required: false
+    },
+    rg_org: {
         type: String,
         required: false
     },

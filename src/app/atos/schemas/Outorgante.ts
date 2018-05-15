@@ -7,18 +7,15 @@ export interface Outorgante extends mongoose.Document {
     pf?: [PF]
     pj?: [PJ]
 }
+
 export const outorganteSchema = new mongoose.Schema({
     tipo: {
         type: String,
         required: true,
         enum: ["pf", "pj"]
     },
-    pf: {
-        type: [pfSchema],
-        required: false
-    },
-    pj: {
-        type: [pjSchema],
+    dados: {
+        type: [pfSchema, pjSchema],
         required: false
     }
 })

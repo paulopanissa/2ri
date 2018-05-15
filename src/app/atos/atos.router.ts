@@ -13,6 +13,13 @@ class AtosRouter extends Model<Ato> {
         app.get(`${this.basePath}`, this.findAll)
         app.post(`${this.basePath}`, this.store)
     }
+
+    storeTest = (req, res, next) => {
+        console.log(req.body)
+        res.json(req.body)
+        return next()
+    }
+
 }
 
 export const atosRouter = new AtosRouter()

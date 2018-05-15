@@ -11,6 +11,7 @@ export interface Conjuge extends mongoose.Document {
     cnh_reg?: string,
     cnh_uf?: string,
     rg?: string,
+    rg_org?: string,
     rg_uf?: string,
     cpf?: string,
 }

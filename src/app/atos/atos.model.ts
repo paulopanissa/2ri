@@ -10,7 +10,7 @@ export interface Ato extends mongoose.Document {
 }
 const atoSchema = new mongoose.Schema({
     ato: {
-        type: [atSchema],
+        type: {atSchema},
         required: true,
         select: true
     },

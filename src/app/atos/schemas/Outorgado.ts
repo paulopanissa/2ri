@@ -14,12 +14,8 @@ export const outorgadoSchema = new mongoose.Schema({
         required: true,
         enum: ["pf", "pj"]
     },
-    pf: {
-        type: [pfSchema],
-        required: false
-    },
-    pj: {
-        type: [pjSchema],
+    dados: {
+        type: {pfSchema, pjSchema},
         required: false
     }
 })
