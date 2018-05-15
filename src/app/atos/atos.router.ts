@@ -11,11 +11,7 @@ class AtosRouter extends Model<Ato> {
 
     applyRoutes(app: restify.Server) {
         app.get(`${this.basePath}`, this.findAll)
-        app.post(`${this.basePath}`, this.atoStore)
-    }
-
-    atoStore = (req, res, next) => {
-        console.log(req.body)
+        app.post(`${this.basePath}`, this.store)
     }
 }
 
